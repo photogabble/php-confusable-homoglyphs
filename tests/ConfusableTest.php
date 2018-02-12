@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 
 class ConfusableTest extends TestCase
 {
-
     private function getConfusables()
     {
         $result = [
@@ -18,24 +17,18 @@ class ConfusableTest extends TestCase
         return $result;
     }
 
-    public function testAliasesCategories()
+    public function testIsMixedScript()
     {
-        $confusables = $this->getConfusables();
+        // @todo
     }
 
-    public function testAlias()
+    public function testIsConfusable()
     {
-        $confusables = $this->getConfusables();
+        // @todo
     }
 
-    public function testCategory()
+    public  function testIsDangerous()
     {
-        $confusables = $this->getConfusables();
+        // @todo
     }
-
-    public function testUniqueAliases()
-    {
-        $confusables = $this->getConfusables();
-    }
-
 }
