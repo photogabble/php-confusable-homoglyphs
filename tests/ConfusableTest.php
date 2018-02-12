@@ -19,7 +19,11 @@ class ConfusableTest extends Base
 
     public function testIsConfusable()
     {
-        // @todo
+        $confusables = new Confusable();
+
+        $greek = $confusables->isConfusable($this->looksGood, ['LATIN']);
+        $this->assertEquals($this->greekA, $greek[0]['character']);
+        // @todo finish
     }
 
     public  function testIsDangerous()
