@@ -2,21 +2,8 @@
 
 namespace Photogabble\ConfusableHomoglyphs\Tests;
 
-use PHPUnit\Framework\TestCase;
-
-class ConfusableTest extends TestCase
+class ConfusableTest extends Base
 {
-    private function getConfusables()
-    {
-        $result = [
-            'latinA' => 'A',
-            'greekA' => 'Α',
-            'isGood'  => 'Allo'
-        ];
-        $result['looksGood'] = str_replace($result['latinA'], $result['greekA'], $result['isGood']);
-        return $result;
-    }
-
     public function testIsMixedScript()
     {
         // @todo
