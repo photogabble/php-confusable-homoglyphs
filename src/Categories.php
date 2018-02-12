@@ -5,17 +5,30 @@ namespace Photogabble\ConfusableHomoglyphs;
 class Categories
 {
 
+    /**
+     * Json decoded content of categories.json.
+     *
+     * @var array
+     */
     private $categoriesData = [];
+
+    /**
+     * The input text encoding for use with mb_ string functions.
+     *
+     * @var string
+     */
+    private $encoding;
 
     /**
      * Categories constructor.
      *
      * Loads the data file containing the categories information.
      *
+     * @param string $encoding
      * @param null|string $dataFilePath
      * @throws \Exception
      */
-    public function __construct($dataFilePath = null)
+    public function __construct($encoding='utf8', $dataFilePath = null)
     {
         if (is_null($dataFilePath)){
             $dataFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'categories.json';
@@ -26,6 +39,7 @@ class Categories
         }
 
         $this->categoriesData = json_decode(file_get_contents($dataFilePath), true);
+        $this->encoding = $encoding;
     }
 
     /**
@@ -42,6 +56,25 @@ class Categories
      */
     public function aliasesCategories($chr)
     {
+        $l = 0;
+        $r = count($this->categoriesData['code_points_ranges']);
+        $c = mb_ord($chr, $this->encoding);
+
+        // Binary Search
+        while ($r >= $l){
+            $m = floor(($l + $r) / 2);
+            if ($c < $this->categoriesData['code_points_ranges'][$m][0]) {
+                $r = $m - 1;
+            } else if ($c > $this->categoriesData['code_points_ranges'][$m][1]) {
+                $l = $m + 1;
+            } else {
+                return [
+                    $this->categoriesData['iso_15924_aliases'][$this->categoriesData['code_points_ranges'][$m][2]],
+                    $this->categoriesData['categories'][$this->categoriesData['code_points_ranges'][$m][3]],
+                ];
+            }
+        }
+
         return ['Unknown', 'Zzzz'];
     }
 
@@ -94,7 +127,14 @@ class Categories
      */
     public function uniqueAliases($string)
     {
-
+        $return = [];
+        foreach (preg_split('//u', $string, -1, PREG_SPLIT_NO_EMPTY) as $char) {
+            $alias = $this->alias($char);
+            if (! in_array($alias, $return)) {
+                array_push($return, $alias);
+            }
+        }
+        return $return;
     }
 
 }
