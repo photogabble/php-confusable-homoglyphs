@@ -2,6 +2,7 @@
 
 namespace Photogabble\ConfusableHomoglyphs\Tests;
 
+use Photogabble\ConfusableHomoglyphs\Categories;
 use Photogabble\ConfusableHomoglyphs\Confusable;
 
 class ConfusableTest extends Base
@@ -9,9 +10,11 @@ class ConfusableTest extends Base
     public function testIsMixedScript()
     {
         try {
-            $confusables = new Confusable();
+            $categories = new Categories();
+            $confusables = new Confusable($categories);
         }catch (\Exception $e) {
             $this->fail($e->getMessage());
+            return;
         }
 
         $this->assertTrue($confusables->isMixedScript($this->looksGood));
@@ -25,9 +28,11 @@ class ConfusableTest extends Base
     public function testIsConfusable()
     {
         try {
-            $confusables = new Confusable();
+            $categories = new Categories();
+            $confusables = new Confusable($categories);
         }catch (\Exception $e) {
             $this->fail($e->getMessage());
+            return;
         }
 
         $greek = $confusables->isConfusable($this->looksGood, ['LATIN']);
@@ -64,9 +69,11 @@ class ConfusableTest extends Base
     public function testIsDangerous()
     {
         try {
-            $confusables = new Confusable();
+            $categories = new Categories();
+            $confusables = new Confusable($categories);
         }catch (\Exception $e) {
             $this->fail($e->getMessage());
+            return;
         }
 
         $this->assertTrue($confusables->isDangerous($this->looksGood));
