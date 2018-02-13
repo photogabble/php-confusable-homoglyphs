@@ -69,6 +69,23 @@ class ConfusableTest extends Base
         $this->assertEquals('p', $confusable);
     }
 
+
+    // Temporary test for issue #2, will be merged with testIsConfusable once complete
+    public function testIsConfusableExtra()
+    {
+        try {
+            $categories = new Categories();
+            $confusables = new Confusable($categories);
+        }catch (\Exception $e) {
+            $this->fail($e->getMessage());
+            return;
+        }
+
+        $this->assertTrue(is_array($confusables->isConfusable('www.micros﻿оft.com', false,['latin'])));
+        $this->assertTrue(is_array($confusables->isConfusable('www.Αpple.com', false,['latin'])));
+        $this->assertTrue(is_array($confusables->isConfusable('www.faϲebook.com', false,['latin'])));
+    }
+
     public function testIsDangerous()
     {
         try {
