@@ -8,7 +8,12 @@ class ConfusableTest extends Base
 {
     public function testIsMixedScript()
     {
-        $confusables = new Confusable();
+        try {
+            $confusables = new Confusable();
+        }catch (\Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
         $this->assertTrue($confusables->isMixedScript($this->looksGood));
         $this->assertTrue($confusables->isMixedScript(' ρττ a'));
 
@@ -19,17 +24,51 @@ class ConfusableTest extends Base
 
     public function testIsConfusable()
     {
-        $confusables = new Confusable();
+        try {
+            $confusables = new Confusable();
+        }catch (\Exception $e) {
+            $this->fail($e->getMessage());
+        }
 
         $greek = $confusables->isConfusable($this->looksGood, ['LATIN']);
         $this->assertEquals($this->greekA, $greek[0]['character']);
-        // @todo finish
+        $this->assertEquals([
+            'c' => 'A',
+            'n' => 'LATIN CAPITAL LETTER A'
+        ], $greek[0]['homoglyphs']);
+
+        $latin = $confusables->isConfusable($this->isGood, ['latin']);
+        $this->assertFalse($latin);
+
+        $this->assertFalse($confusables->isConfusable('AlloΓ', ['latin']));
+
+        // Stop at first confusable character
+        $this->assertEquals(1, count($confusables->isConfusable('Αlloρ', false)));
+
+        // Find all confusable characters
+        // Α (greek), l, o, and ρ can be confused with other unicode characters
+        $this->assertEquals(4, count($confusables->isConfusable('Αlloρ', true)));
+
+        // Only Α (greek) and ρ (greek) can be confused with a latin character
+        $this->assertEquals(2, count($confusables->isConfusable('Αlloρ', true, ['latin'])));
+
+        // For 'Latin' readers, ρ is confusable!    ↓
+        $confusable = $confusables->isConfusable('paρa', ['latin'])[0]['character'];
+        $this->assertEquals('ρ', $confusable);
+
+        // For 'Greek' readers, p is confusable!  ↓
+        $confusable = $confusables->isConfusable('paρa', ['greek'])[0]['character'];
+        $this->assertEquals('p', $confusable);
     }
 
-    public  function testIsDangerous()
+    public function testIsDangerous()
     {
-        $confusables = new Confusable();
-        
+        try {
+            $confusables = new Confusable();
+        }catch (\Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
         $this->assertTrue($confusables->isDangerous($this->looksGood));
         $this->assertTrue($confusables->isDangerous(' ρττ a'));
         $this->assertTrue($confusables->isDangerous('ρττ a'));
