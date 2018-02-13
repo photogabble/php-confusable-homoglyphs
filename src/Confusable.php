@@ -13,14 +13,28 @@ class Confusable
     private $confusablesData  = [];
 
     /**
+     * The input text encoding for use with mb_ string functions.
+     *
+     * @var string
+     */
+    private $encoding;
+
+    /**
+     * @var Categories
+     */
+    private $categories;
+
+    /**
      * Confusable constructor.
      *
      * Loads the data file containing the confusables information.
      *
+     * @param Categories $categories
+     * @param string $encoding
      * @param null|string $dataFilePath
      * @throws \Exception
      */
-    public function __construct($dataFilePath = null)
+    public function __construct(Categories $categories, string $encoding='utf8', string $dataFilePath = null)
     {
         if (is_null($dataFilePath)){
             $dataFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'categories.json';
@@ -31,6 +45,8 @@ class Confusable
         }
 
         $this->confusablesData = json_decode(file_get_contents($dataFilePath), true);
+        $this->encoding = $encoding;
+        $this->categories = $categories;
     }
 
     /**
@@ -51,9 +67,11 @@ class Confusable
      * @param array $allowedAliases Script blocks aliases not to consider.
      * @return bool Is $string considered mixed-scripts or not.
      */
-    public function isMixedScript($string, array $allowedAliases = ['COMMON'])
+    public function isMixedScript(string $string, array $allowedAliases = ['COMMON']) : bool
     {
-
+        $allowedAliases = array_map(function($value) {
+            return mb_strtoupper($value, $this->encoding);
+        }, $allowedAliases);
     }
 
     /**
@@ -95,9 +113,9 @@ class Confusable
      * @param string $string A unicode string
      * @param bool $greedy Don't stop on finding one confusable character - find all of them.
      * @param array $preferredAliases Script blocks aliases which we don't want `$string`'s characters to be confused with.
-     * @return boolean|array False if not confusable, all confusable characters and with what they are confusable otherwise.
+     * @return bool|array False if not confusable, all confusable characters and with what they are confusable otherwise.
      */
-    public function isConfusable($string, $greedy = false, $preferredAliases = [])
+    public function isConfusable(string $string, bool $greedy = false, array $preferredAliases = [])
     {
 
     }
@@ -119,9 +137,9 @@ class Confusable
      *
      * @param string $string A unicode string
      * @param array $preferredAliases Script blocks aliases which we don't want `$string`'s characters to be confused with.
-     * @return boolean Is it dangerous.
+     * @return bool Is it dangerous.
      */
-    public function isDangerous($string, $preferredAliases = [])
+    public function isDangerous(string $string, array $preferredAliases = []) : bool
     {
         return $this->isMixedScript($string) === true && $this->isConfusable($string, $preferredAliases) !== false;
     }

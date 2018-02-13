@@ -27,7 +27,7 @@ class Categories
      * @param null|string $dataFilePath
      * @throws \Exception
      */
-    public function __construct(string $encoding='utf8', $dataFilePath = null)
+    public function __construct(string $encoding='utf8', string $dataFilePath = null)
     {
         if (is_null($dataFilePath)){
             $dataFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'categories.json';
