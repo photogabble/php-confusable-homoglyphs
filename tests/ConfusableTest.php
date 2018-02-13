@@ -36,17 +36,19 @@ class ConfusableTest extends Base
             return;
         }
 
-        $greek = $confusables->isConfusable($this->looksGood, ['LATIN']);
+        $greek = $confusables->isConfusable($this->looksGood, false, ['latin']);
         $this->assertEquals($this->greekA, $greek[0]['character']);
         $this->assertEquals([
-            'c' => 'A',
-            'n' => 'LATIN CAPITAL LETTER A'
+            [
+                'c' => 'A',
+                'n' => 'LATIN CAPITAL LETTER A'
+            ]
         ], $greek[0]['homoglyphs']);
 
-        $latin = $confusables->isConfusable($this->isGood, ['latin']);
+        $latin = $confusables->isConfusable($this->isGood, false, ['latin']);
         $this->assertFalse($latin);
 
-        $this->assertFalse($confusables->isConfusable('AlloΓ', ['latin']));
+        $this->assertFalse($confusables->isConfusable('AlloΓ', false, ['latin']));
 
         // Stop at first confusable character
         $this->assertEquals(1, count($confusables->isConfusable('Αlloρ', false)));
@@ -59,11 +61,11 @@ class ConfusableTest extends Base
         $this->assertEquals(2, count($confusables->isConfusable('Αlloρ', true, ['latin'])));
 
         // For 'Latin' readers, ρ is confusable!    ↓
-        $confusable = $confusables->isConfusable('paρa', ['latin'])[0]['character'];
+        $confusable = $confusables->isConfusable('paρa', false, ['latin'])[0]['character'];
         $this->assertEquals('ρ', $confusable);
 
         // For 'Greek' readers, p is confusable!  ↓
-        $confusable = $confusables->isConfusable('paρa', ['greek'])[0]['character'];
+        $confusable = $confusables->isConfusable('paρa', false, ['greek'])[0]['character'];
         $this->assertEquals('p', $confusable);
     }
 

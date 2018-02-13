@@ -37,7 +37,7 @@ class Confusable
     public function __construct(Categories $categories, string $encoding='utf8', string $dataFilePath = null)
     {
         if (is_null($dataFilePath)){
-            $dataFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'categories.json';
+            $dataFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'confusables.json';
         }
 
         if (!file_exists($dataFilePath)) {
@@ -123,7 +123,73 @@ class Confusable
      */
     public function isConfusable(string $string, bool $greedy = false, array $preferredAliases = [])
     {
+        $preferredAliases = array_map(function($value) {
+            return mb_strtoupper($value, $this->encoding);
+        }, $preferredAliases);
 
+        $outputs = [];
+        $checked = [];
+
+        foreach (preg_split('//u', $string, -1, PREG_SPLIT_NO_EMPTY) as $char) {
+            if (in_array($char, $checked)) {
+                continue;
+            }
+            array_push($checked, $char);
+
+            $charAlias = $this->categories->alias($char);
+            if (in_array($charAlias, $preferredAliases)){
+                // It's safe if the character might be confusable with homoglyphs from other
+                // categories than our preferred categories (=aliases)
+                continue;
+            }
+
+            $found = $this->confusablesData[$char];
+            // Character λ is considered confusable if λ can be confused with a character from
+            // $preferredAliases, e.g. if 'LATIN', 'ρ' is confusable with 'p' from LATIN.
+            // if 'LATIN', 'Γ' is not confusable because in all the characters confusable with Γ,
+            // none of them is LATIN.
+
+            if (count($preferredAliases) > 0) {
+                $potentiallyConfusable = [];
+                foreach ($found as $d) {
+                    $aliases = [];
+
+                    foreach (preg_split('//u', $d['c'], -1, PREG_SPLIT_NO_EMPTY) as $glyph) {
+                        array_push($aliases, $this->categories->alias($glyph));
+                    }
+
+                    foreach ($aliases as $a) {
+                        if (in_array($a, $preferredAliases)){
+                            $potentiallyConfusable = $found;
+                            break;
+                        }
+                    }
+
+                }
+            } else {
+                $potentiallyConfusable = $found;
+            }
+
+            if (count($potentiallyConfusable) > 0) {
+                // we found homoglyphs
+
+                $output = [
+                    'character' => $char,
+                    'alias' => $charAlias,
+                    'homoglyphs' => $potentiallyConfusable
+                ];
+                if (!$greedy) {
+                    return [$output];
+                }
+                array_push($outputs, $output);
+            }
+        }
+
+        if (count($outputs) < 1) {
+            return false;
+        }
+
+        return $outputs;
     }
 
     /**
@@ -147,7 +213,7 @@ class Confusable
      */
     public function isDangerous(string $string, array $preferredAliases = []) : bool
     {
-        return $this->isMixedScript($string) === true && $this->isConfusable($string, $preferredAliases) !== false;
+        return $this->isMixedScript($string) === true && $this->isConfusable($string, false, $preferredAliases) !== false;
     }
 
 }
