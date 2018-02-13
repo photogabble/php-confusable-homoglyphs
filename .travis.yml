@@ -16,6 +16,7 @@ cache:
     - $HOME/.composer/cache
 
 before_install:
+  - phpenmod mbstring
   - source .travis/travis.sh
   - xdebug-disable
   - travis_retry composer self-update
