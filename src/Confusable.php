@@ -72,6 +72,12 @@ class Confusable
         $allowedAliases = array_map(function($value) {
             return mb_strtoupper($value, $this->encoding);
         }, $allowedAliases);
+
+        $unique = array_filter($this->categories->uniqueAliases($string), function($value) use ($allowedAliases) {
+            return ! in_array($value, $allowedAliases);
+        });
+
+        return count($unique) > 1;
     }
 
     /**

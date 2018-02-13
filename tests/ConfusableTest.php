@@ -20,6 +20,7 @@ class ConfusableTest extends Base
         $this->assertTrue($confusables->isMixedScript($this->looksGood));
         $this->assertTrue($confusables->isMixedScript(' ρττ a'));
 
+        $this->assertFalse($confusables->isMixedScript($this->looksGood, ['GREEK', 'LATIN']));
         $this->assertFalse($confusables->isMixedScript($this->isGood));
         $this->assertFalse($confusables->isMixedScript('ρτ.τ'));
         $this->assertFalse($confusables->isMixedScript('ρτ.τ '));
