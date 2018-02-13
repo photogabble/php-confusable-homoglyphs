@@ -24,6 +24,9 @@ function xdebug-enable() {
     fi
 }
 
+function enable-mbstring() {
+   echo "extension = mbstring.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+}
 function run-tests() {
     if [[ "$WITH_COVERAGE" == "true" ]]; then
         xdebug-enable
