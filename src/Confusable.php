@@ -5,6 +5,11 @@ namespace Photogabble\ConfusableHomoglyphs;
 class Confusable
 {
 
+    /**
+     * Json decoded content of confusables.json.
+     *
+     * @var array
+     */
     private $confusablesData  = [];
 
     /**
