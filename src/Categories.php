@@ -4,7 +4,6 @@ namespace Photogabble\ConfusableHomoglyphs;
 
 class Categories
 {
-
     /**
      * Json decoded content of categories.json.
      *
@@ -28,7 +27,7 @@ class Categories
      * @param null|string $dataFilePath
      * @throws \Exception
      */
-    public function __construct($encoding='utf8', $dataFilePath = null)
+    public function __construct(string $encoding='utf8', $dataFilePath = null)
     {
         if (is_null($dataFilePath)){
             $dataFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'categories.json';
@@ -54,7 +53,7 @@ class Categories
      * @param string $chr A unicode character
      * @return array The script block alias and unicode category for a unicode character.
      */
-    public function aliasesCategories($chr)
+    public function aliasesCategories(string $chr) : array
     {
         $l = 0;
         $r = count($this->categoriesData['code_points_ranges']);
@@ -90,7 +89,7 @@ class Categories
      * @param string $chr A unicode character
      * @return string The script block alias.
      */
-    public function alias($chr)
+    public function alias(string $chr) : string
     {
         $arr = $this->aliasesCategories($chr);
         return $arr[0];
@@ -108,7 +107,7 @@ class Categories
      * @param string $chr A unicode character
      * @return string The unicode category for a unicode character.
      */
-    public function category($chr)
+    public function category(string $chr) : string
     {
         $arr = $this->aliasesCategories($chr);
         return $arr[1];
@@ -125,7 +124,7 @@ class Categories
      * @param string $string A unicode string
      * @return array A set of the script block aliases used in a unicode string.
      */
-    public function uniqueAliases($string)
+    public function uniqueAliases(string $string) : array
     {
         $return = [];
         foreach (preg_split('//u', $string, -1, PREG_SPLIT_NO_EMPTY) as $char) {
@@ -136,5 +135,4 @@ class Categories
         }
         return $return;
     }
-
 }
