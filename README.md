@@ -24,3 +24,8 @@ Install this library with composer: `composer require photogabble/php-confusable
 ## Usage
 
 Please see the [tests](https://github.com/photogabble/php-confusable-homoglyphs/tree/master/tests) for detailed example of usage.
+
+#### Known Usage
+
+* [Laravel Registration Validator package ](https://github.com/photogabble/laravel-registration-validator)
+* If you use this package in your open source project please create a pull request to add a link here
