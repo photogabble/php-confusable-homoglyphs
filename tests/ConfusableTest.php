@@ -67,6 +67,16 @@ class ConfusableTest extends Base
         // For 'Greek' readers, p is confusable!  ↓
         $confusable = $confusables->isConfusable('paρa', false, ['greek'])[0]['character'];
         $this->assertEquals('p', $confusable);
+
+        // Microsoft contains a zero width character - added for #2
+        $this->assertTrue(is_array($confusables->isConfusable('www.micros﻿оft.com')));
+        $this->assertTrue(is_array($confusables->isConfusable('www.Αpple.com')));
+        $this->assertTrue(is_array($confusables->isConfusable('www.faϲebook.com')));
+
+        // The three below are all not confusable - added for #2
+        $this->assertFalse(is_array($confusables->isConfusable('www.microsoft.com', false, ['latin'])));
+        $this->assertFalse(is_array($confusables->isConfusable('www.apple.com', false, ['latin'])));
+        $this->assertFalse(is_array($confusables->isConfusable('www.facebook.com', false, ['latin'])));
     }
 
     public function testIsDangerous()
