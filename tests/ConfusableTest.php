@@ -67,23 +67,16 @@ class ConfusableTest extends Base
         // For 'Greek' readers, p is confusable!  ↓
         $confusable = $confusables->isConfusable('paρa', false, ['greek'])[0]['character'];
         $this->assertEquals('p', $confusable);
-    }
 
+        // Microsoft contains a zero width character - added for #2
+        $this->assertTrue(is_array($confusables->isConfusable('www.micros﻿оft.com')));
+        $this->assertTrue(is_array($confusables->isConfusable('www.Αpple.com')));
+        $this->assertTrue(is_array($confusables->isConfusable('www.faϲebook.com')));
 
-    // Temporary test for issue #2, will be merged with testIsConfusable once complete
-    public function testIsConfusableExtra()
-    {
-        try {
-            $categories = new Categories();
-            $confusables = new Confusable($categories);
-        }catch (\Exception $e) {
-            $this->fail($e->getMessage());
-            return;
-        }
-
-        $this->assertTrue(is_array($confusables->isConfusable('www.micros﻿оft.com', false,['latin'])));
-        $this->assertTrue(is_array($confusables->isConfusable('www.Αpple.com', false,['latin'])));
-        $this->assertTrue(is_array($confusables->isConfusable('www.faϲebook.com', false,['latin'])));
+        // The three below are all not confusable - added for #2
+        $this->assertFalse(is_array($confusables->isConfusable('www.microsoft.com', false, ['latin'])));
+        $this->assertFalse(is_array($confusables->isConfusable('www.apple.com', false, ['latin'])));
+        $this->assertFalse(is_array($confusables->isConfusable('www.facebook.com', false, ['latin'])));
     }
 
     public function testIsDangerous()
