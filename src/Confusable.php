@@ -134,8 +134,7 @@ class Confusable
             if (in_array($char, $checked)) {
                 continue;
             }
-            array_push($checked, $char);
-
+            $checked[] = $char;
             $charAlias = $this->categories->alias($char);
             if (in_array($charAlias, $preferredAliases)){
                 // It's safe if the character might be confusable with homoglyphs from other
@@ -145,7 +144,7 @@ class Confusable
 
             // The original source uses the Python dictionary get() method which returns a default
             // if the key doesn't exist in the dictionary. This solves issue #2.
-            $found = isset($this->confusablesData[$char]) ? $this->confusablesData[$char] : [];
+            $found = $this->confusablesData[$char] ?? [];
             // Character λ is considered confusable if λ can be confused with a character from
             // $preferredAliases, e.g. if 'LATIN', 'ρ' is confusable with 'p' from LATIN.
             // if 'LATIN', 'Γ' is not confusable because in all the characters confusable with Γ,
