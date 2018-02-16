@@ -156,7 +156,7 @@ class Confusable
                     $aliases = [];
 
                     foreach (preg_split('//u', $d['c'], -1, PREG_SPLIT_NO_EMPTY) as $glyph) {
-                        array_push($aliases, $this->categories->alias($glyph));
+                        $aliases[] = $this->categories->alias($glyph);
                     }
 
                     foreach ($aliases as $a) {
@@ -182,7 +182,7 @@ class Confusable
                 if (!$greedy) {
                     return [$output];
                 }
-                array_push($outputs, $output);
+                $outputs[] = $output;
             }
         }
 
