@@ -20,7 +20,8 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0"
+    "php": ">=7.0.0",
+    "symfony/polyfill-mbstring": ">=1.3"
   },
   "require-dev": {
     "phpunit/phpunit": "6.*|7.*"
@@ -28,10 +29,7 @@
   "autoload": {
     "psr-4": {
       "Photogabble\\ConfusableHomoglyphs\\": "src/"
-    },
-    "files": [
-      "src/helpers.php"
-    ]
+    }
   },
   "autoload-dev": {
     "psr-4": {
