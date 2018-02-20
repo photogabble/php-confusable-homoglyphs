@@ -7,9 +7,24 @@ use Exception;
 class JsonGenerator
 {
 
-    private $sourceDatestamp;
+    /**
+     * @var \DateTime
+     */
+    private $sourceDatetime;
+
+    /**
+     * @var array
+     */
     private $codePointsRanges = [];
+
+    /**
+     * @var array
+     */
     private $iso15924Aliases = [];
+
+    /**
+     * @var array
+     */
     private $categories = [];
 
     /**
@@ -17,10 +32,9 @@ class JsonGenerator
      * loaded from the given `$filePathname` string.
      *
      * @param string $filePathname
-     * @return true
      * @throws Exception
      */
-    public function generateFromFile(string $filePathname) : bool
+    public function generateFromFile(string $filePathname) : void
     {
         if (!file_exists($filePathname)){
             throw new Exception('The file found at ['.$filePathname.'] could not be read.');
@@ -30,32 +44,23 @@ class JsonGenerator
             while (($line = fgets($handle)) !== false) {
                 $this->parseLine($line);
             }
-
             fclose($handle);
         } else {
             throw new Exception('The file found at ['.$filePathname.'] could not be opened.');
         }
 
-
-        return true;
+        sort($this->codePointsRanges);
     }
 
     /**
-     * Generates the categories JSON data file from the unicode specification
-     * loaded from the given `$url`.
+     * Parse the given $line into code point range's, alias and category.
      *
-     * @param string $url
-     * @return true
+     * @param string $line
      */
-    public function generateFromUrl(string $url) : bool
-    {
-        return true;
-    }
-
     private function parseLine(string $line) : void
     {
         if (preg_match('/Date: ([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])), ((?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)) ([A-Z]+)/', $line, $dateMatches) > 0) {
-            $this->sourceDatestamp = new \DateTime($dateMatches[1] . ' ' . $dateMatches[4], new \DateTimeZone($dateMatches[8]));
+            $this->sourceDatetime = new \DateTime($dateMatches[1] . ' ' . $dateMatches[4], new \DateTimeZone($dateMatches[8]));
             return;
         } unset($dateMatches);
 
@@ -63,8 +68,8 @@ class JsonGenerator
             return;
         }
 
-        $code_point_range_from = $matches[1];
-        $code_point_range_to = $matches[2];
+        $codePointRangeFrom = $matches[1];
+        $codePointRangeTo = $matches[2];
         $alias = mb_strtoupper($matches[3]);
         $category = $matches[4];
 
@@ -77,10 +82,40 @@ class JsonGenerator
         }
 
         $this->codePointsRanges[] = [
-            hexdec($code_point_range_from),
-            hexdec($code_point_range_to),
+            hexdec($codePointRangeFrom),
+            hexdec((empty($codePointRangeTo) ? $codePointRangeFrom : $codePointRangeTo)),
             array_search($alias, $this->iso15924Aliases, true),
             array_search($category, $this->categories, true)
         ];
+    }
+
+    /**
+     * Return categories data as an array.
+     *
+     * @return array
+     */
+    public function toArray() : array
+    {
+        return [
+            'timestamp' => $this->sourceDatetime->format('c'),
+            'code_points_ranges' => $this->codePointsRanges,
+            'categories' => $this->categories,
+            'iso_15924_aliases' => $this->iso15924Aliases
+        ];
+    }
+
+    /**
+     * Return categories data as a json string.
+     *
+     * @return string
+     * @throws Exception
+     */
+    public function toJson() : string
+    {
+        $json = json_encode($this->toArray());
+        if ($json === false) {
+            throw new Exception(json_last_error_msg(), json_last_error());
+        }
+        return $json;
     }
 }
