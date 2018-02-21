@@ -34,7 +34,7 @@ class JsonGenerator
      * @param string $filePathname
      * @throws Exception
      */
-    public function generateFromFile(string $filePathname) : void
+    public function generateFromFile(string $filePathname)
     {
         if (!file_exists($filePathname)){
             throw new Exception('The file found at ['.$filePathname.'] could not be read.');
@@ -50,7 +50,6 @@ class JsonGenerator
         }
 
         sort($this->codePointsRanges);
-        return;
     }
 
     /**
@@ -58,7 +57,7 @@ class JsonGenerator
      *
      * @param string $line
      */
-    private function parseLine(string $line) : void
+    private function parseLine(string $line)
     {
         if (preg_match('/Date: ([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])), ((?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)) ([A-Z]+)/', $line, $dateMatches) > 0) {
             $this->sourceDatetime = new \DateTime($dateMatches[1] . ' ' . $dateMatches[4], new \DateTimeZone($dateMatches[8]));
@@ -88,7 +87,6 @@ class JsonGenerator
             array_search($alias, $this->iso15924Aliases, true),
             array_search($category, $this->categories, true)
         ];
-        return;
     }
 
     /**
