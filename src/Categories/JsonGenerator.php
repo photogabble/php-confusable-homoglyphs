@@ -50,6 +50,7 @@ class JsonGenerator
         }
 
         sort($this->codePointsRanges);
+        return;
     }
 
     /**
@@ -87,6 +88,7 @@ class JsonGenerator
             array_search($alias, $this->iso15924Aliases, true),
             array_search($category, $this->categories, true)
         ];
+        return;
     }
 
     /**

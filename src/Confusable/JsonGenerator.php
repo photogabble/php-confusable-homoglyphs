@@ -40,6 +40,7 @@ class JsonGenerator
         } else {
             throw new Exception('The file found at ['.$filePathname.'] could not be opened.');
         }
+        return;
     }
 
     /**
@@ -81,6 +82,7 @@ class JsonGenerator
             'c' => $charOne,
             'n' => $nameOne
         ];
+        return;
     }
 
     /**
