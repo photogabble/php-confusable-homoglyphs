@@ -29,3 +29,11 @@ Please see the [tests](https://github.com/photogabble/php-confusable-homoglyphs/
 
 * [Laravel Registration Validator package ](https://github.com/photogabble/laravel-registration-validator)
 * If you use this package in your open source project please create a pull request to add a link here
+
+## Is the data up to date?
+
+This project currently ships with unicode consortium public data version 10.0.0.
+
+The unicode blocks aliases and names for each character are extracted from [this file](http://www.unicode.org/Public/UNIDATA/Scripts.txt) provided by the unicode consortium. The version this project currently ships with was generated on the 11th March 2017.
+
+The matrix of which character can be confused with which other characters is built using [this file](http://www.unicode.org/Public/security/latest/confusables.txt) provided by the unicode consortium. The version this project currently ships with was generated on the 8th April 2017.

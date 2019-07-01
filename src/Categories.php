@@ -130,7 +130,7 @@ class Categories
         foreach (preg_split('//u', $string, -1, PREG_SPLIT_NO_EMPTY) as $char) {
             $alias = $this->alias($char);
             if (! in_array($alias, $return)) {
-                array_push($return, $alias);
+                $return[] = $alias;
             }
         }
         return $return;
