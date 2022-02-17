@@ -2,6 +2,7 @@
 
 namespace Photogabble\ConfusableHomoglyphs\Tests;
 
+use Exception;
 use Photogabble\ConfusableHomoglyphs\Categories;
 use Photogabble\ConfusableHomoglyphs\Categories\JsonGenerator;
 
@@ -13,8 +14,8 @@ class CategoriesTest extends Base
      */
     public static function setUpBeforeClass()
     {
-        if (! file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'Scripts.txt')) {
-            $scripts = file_get_contents('http://www.unicode.org/Public/UNIDATA/Scripts.txt');
+        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'Scripts.txt')) {
+            $scripts = file_get_contents('https://www.unicode.org/Public/UNIDATA/Scripts.txt');
             file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'Scripts.txt', $scripts);
         }
     }
@@ -22,13 +23,12 @@ class CategoriesTest extends Base
     /**
      * @return Categories
      */
-    private function categoriesFactory() : Categories
+    private function categoriesFactory(): Categories
     {
         try {
             return new Categories('utf8', __DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'categories.json');
-        }catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
-            return null;
         }
     }
 
@@ -37,18 +37,17 @@ class CategoriesTest extends Base
         $generator = new JsonGenerator();
         try {
             $generator->generateFromFile(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'Scripts.txt');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
-            return;
         }
 
         $arr = $generator->toArray();
         $this->assertSame(['timestamp', 'code_points_ranges', 'categories', 'iso_15924_aliases'], array_keys($arr));
 
-        $this->assertSame([0,31,0,0], $arr['code_points_ranges'][0]);
-        $this->assertSame([32,32,0,1], $arr['code_points_ranges'][1]);
-        $this->assertSame([33,35,0,2], $arr['code_points_ranges'][2]);
-        $this->assertSame([36,36,0,3], $arr['code_points_ranges'][3]);
+        $this->assertSame([0, 31, 0, 0], $arr['code_points_ranges'][0]);
+        $this->assertSame([32, 32, 0, 1], $arr['code_points_ranges'][1]);
+        $this->assertSame([33, 35, 0, 2], $arr['code_points_ranges'][2]);
+        $this->assertSame([36, 36, 0, 3], $arr['code_points_ranges'][3]);
 
         $this->assertTrue(count($arr['iso_15924_aliases']) >= 141);
         $this->assertTrue(count($arr['categories']) >= 25);
@@ -56,9 +55,8 @@ class CategoriesTest extends Base
 
         try {
             $json = $generator->toJson();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
-            return;
         }
 
         file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'categories.json', $json);
