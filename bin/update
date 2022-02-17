@@ -1,6 +1,10 @@
 #!/usr/bin/env php
 <?php
 
+use Photogabble\ConfusableHomoglyphs\Generators\CategoriesJsonGenerator;
+use Photogabble\ConfusableHomoglyphs\Generators\ConfusableJsonGenerator;
+use Photogabble\ConfusableHomoglyphs\Generators\Generator;
+
 $autoload = __DIR__ . "/../vendor/autoload.php";
 if (!file_exists($autoload)) {
     fwrite(
@@ -13,13 +17,13 @@ require $autoload;
 
 $generators = [
     [
-        'src' =>   'https://www.unicode.org/Public/UNIDATA/Scripts.txt',
-        'handler' => \Photogabble\ConfusableHomoglyphs\Generators\CategoriesJsonGenerator::class,
+        'src' => 'https://www.unicode.org/Public/UNIDATA/Scripts.txt',
+        'handler' => CategoriesJsonGenerator::class,
         'dist' => 'categories'
     ],
     [
-        'src' =>   'https://www.unicode.org/Public/security/latest/confusables.txt',
-        'handler' => \Photogabble\ConfusableHomoglyphs\Generators\ConfusableJsonGenerator::class,
+        'src' => 'https://www.unicode.org/Public/security/latest/confusables.txt',
+        'handler' => ConfusableJsonGenerator::class,
         'dist' => 'confusables'
     ],
 ];
@@ -44,11 +48,11 @@ foreach ($generators as $generator) {
 
     $hash = sha1($src);
     if ($hashes[$generator['dist']] === $hash) {
-        fwrite(STDOUT, "Skipping [{$generator['dist']}]". PHP_EOL);
+        fwrite(STDOUT, "Skipping [{$generator['dist']}]" . PHP_EOL);
         continue;
     }
 
-    /** @var \Photogabble\ConfusableHomoglyphs\Generators\Generator $handler */
+    /** @var Generator $handler */
     $handler = new $generator['handler'];
     $handler->generateFromFile($pathName);
 
@@ -63,7 +67,7 @@ foreach ($generators as $generator) {
     }
 
     file_put_contents(__DIR__ . "/../src/{$generator['dist']}.json", $json);
-    fwrite(STDOUT, "Saved [{$generator['dist']}] sha1:$hash". PHP_EOL);
+    fwrite(STDOUT, "Saved [{$generator['dist']}] sha1:$hash" . PHP_EOL);
 
     $hashes[$generator['dist']] = $hash;
     $hashes['updated'] = date('c');
