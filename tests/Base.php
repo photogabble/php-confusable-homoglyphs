@@ -11,7 +11,7 @@ class Base extends TestCase
     protected $isGood = 'Allo';
     protected $looksGood;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->looksGood = str_replace($this->latinA, $this->greekA, $this->isGood);
