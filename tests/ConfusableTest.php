@@ -2,20 +2,58 @@
 
 namespace Photogabble\ConfusableHomoglyphs\Tests;
 
+use Exception;
 use Photogabble\ConfusableHomoglyphs\Categories;
 use Photogabble\ConfusableHomoglyphs\Confusable;
+use Photogabble\ConfusableHomoglyphs\Confusable\JsonGenerator;
 
 class ConfusableTest extends Base
 {
-    public function testIsMixedScript()
+    /**
+     * Get Scripts.txt from the unicode.org website.
+     */
+    public static function setUpBeforeClass()
+    {
+        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'confusables.txt')) {
+            $scripts = file_get_contents('https://www.unicode.org/Public/security/latest/confusables.txt');
+            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'confusables.txt', $scripts);
+        }
+    }
+
+    public function confusableFactory(): Confusable
     {
         try {
-            $categories = new Categories();
-            $confusables = new Confusable($categories);
-        }catch (\Exception $e) {
+            $categories = new Categories('utf8', __DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'categories.json');
+            return new Confusable($categories, 'utf8', __DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'confusables.json');
+        } catch (Exception $e) {
             $this->fail($e->getMessage());
-            return;
         }
+    }
+
+    public function testConfusableJsonGenerator()
+    {
+        $generator = new JsonGenerator();
+        try {
+            $generator->generateFromFile(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'confusables.txt');
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        $arr = $generator->toArray();
+        $this->assertTrue(count($arr) >= 9598);
+
+        try {
+            $json = $generator->toJson();
+        } catch (Exception $e) {
+            $this->fail($e->getMessage());
+        }
+
+        file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'confusables.json', $json);
+    }
+
+    public function testIsMixedScript()
+    {
+        $confusables = $this->confusableFactory();
 
         $this->assertTrue($confusables->isMixedScript($this->looksGood));
         $this->assertTrue($confusables->isMixedScript(' ρττ a'));
@@ -28,13 +66,7 @@ class ConfusableTest extends Base
 
     public function testIsConfusable()
     {
-        try {
-            $categories = new Categories();
-            $confusables = new Confusable($categories);
-        }catch (\Exception $e) {
-            $this->fail($e->getMessage());
-            return;
-        }
+        $confusables = $this->confusableFactory();
 
         $greek = $confusables->isConfusable($this->looksGood, false, ['latin']);
         $this->assertEquals($this->greekA, $greek[0]['character']);
@@ -81,13 +113,7 @@ class ConfusableTest extends Base
 
     public function testIsDangerous()
     {
-        try {
-            $categories = new Categories();
-            $confusables = new Confusable($categories);
-        }catch (\Exception $e) {
-            $this->fail($e->getMessage());
-            return;
-        }
+        $confusables = $this->confusableFactory();
 
         $this->assertTrue($confusables->isDangerous($this->looksGood));
         $this->assertTrue($confusables->isDangerous(' ρττ a'));
