@@ -2,13 +2,16 @@
 
 namespace Photogabble\ConfusableHomoglyphs\Confusable;
 
+use DateTime;
+use DateTimeZone;
 use Exception;
+use Photogabble\ConfusableHomoglyphs\Generator;
 
-class JsonGenerator
+class JsonGenerator implements Generator
 {
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $sourceDatetime;
 
@@ -16,7 +19,6 @@ class JsonGenerator
      * @var array
      */
     private $confusablesMatrix = [];
-
 
 
     /**
@@ -28,8 +30,8 @@ class JsonGenerator
      */
     public function generateFromFile(string $filePathname)
     {
-        if (!file_exists($filePathname)){
-            throw new Exception('The file found at ['.$filePathname.'] could not be read.');
+        if (!file_exists($filePathname)) {
+            throw new Exception('The file found at [' . $filePathname . '] could not be read.');
         }
         $handle = fopen($filePathname, "r");
         if ($handle) {
@@ -38,7 +40,7 @@ class JsonGenerator
             }
             fclose($handle);
         } else {
-            throw new Exception('The file found at ['.$filePathname.'] could not be opened.');
+            throw new Exception('The file found at [' . $filePathname . '] could not be opened.');
         }
     }
 
@@ -50,9 +52,10 @@ class JsonGenerator
     private function parseLine(string $line)
     {
         if (preg_match('/Date: ([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])), ((?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)) ([A-Z]+)/', $line, $dateMatches) > 0) {
-            $this->sourceDatetime = new \DateTime($dateMatches[1] . ' ' . $dateMatches[4], new \DateTimeZone($dateMatches[8]));
+            $this->sourceDatetime = new DateTime($dateMatches[1] . ' ' . $dateMatches[4], new DateTimeZone($dateMatches[8]));
             return;
-        } unset($dateMatches);
+        }
+        unset($dateMatches);
 
         if (preg_match('/[0-9A-F ]+\s+;\s*[0-9A-F ]+\s+;\s*\w+\s*#\*?\s*\( (.+) → (.+) \) (.+) → (.+)\t#/', $line, $matches) < 1) {
             return;
@@ -63,7 +66,7 @@ class JsonGenerator
         $nameOne = $matches[3];
         $nameTwo = $matches[4];
 
-        if (! isset($this->confusablesMatrix[$charOne])) {
+        if (!isset($this->confusablesMatrix[$charOne])) {
             $this->confusablesMatrix[$charOne] = [];
         }
 
@@ -73,7 +76,7 @@ class JsonGenerator
         ];
 
 
-        if (! isset($this->confusablesMatrix[$charTwo])) {
+        if (!isset($this->confusablesMatrix[$charTwo])) {
             $this->confusablesMatrix[$charTwo] = [];
         }
 
@@ -88,23 +91,28 @@ class JsonGenerator
      *
      * @return array
      */
-    public function toArray() : array
+    public function toArray(): array
     {
         return $this->confusablesMatrix;
     }
 
     /**
-     * Return categories data as a json string.
+     * Return category data as a json string.
      *
      * @return string
      * @throws Exception
      */
-    public function toJson() : string
+    public function toJson(): string
     {
         $json = json_encode($this->toArray());
         if ($json === false) {
             throw new Exception(json_last_error_msg(), json_last_error());
         }
         return $json;
+    }
+
+    public function getDateTime(): DateTime
+    {
+        return $this->sourceDatetime;
     }
 }
