@@ -19,6 +19,9 @@
       "homepage": "https://www.photogabble.co.uk"
     }
   ],
+  "scripts": {
+    "test": "vendor/bin/phpunit"
+  },
   "require": {
     "php": ">=7.0.0",
     "ext-json": "*",
