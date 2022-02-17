@@ -1,14 +1,16 @@
 <?php
 
-namespace Photogabble\ConfusableHomoglyphs\Categories;
+namespace Photogabble\ConfusableHomoglyphs\Generators;
 
+use DateTime;
+use DateTimeZone;
 use Exception;
 
-class JsonGenerator
+class CategoriesJsonGenerator implements Generator
 {
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $sourceDatetime;
 
@@ -36,8 +38,8 @@ class JsonGenerator
      */
     public function generateFromFile(string $filePathname)
     {
-        if (!file_exists($filePathname)){
-            throw new Exception('The file found at ['.$filePathname.'] could not be read.');
+        if (!file_exists($filePathname)) {
+            throw new Exception('The file found at [' . $filePathname . '] could not be read.');
         }
         $handle = fopen($filePathname, "r");
         if ($handle) {
@@ -46,7 +48,7 @@ class JsonGenerator
             }
             fclose($handle);
         } else {
-            throw new Exception('The file found at ['.$filePathname.'] could not be opened.');
+            throw new Exception('The file found at [' . $filePathname . '] could not be opened.');
         }
 
         sort($this->codePointsRanges);
@@ -60,9 +62,10 @@ class JsonGenerator
     private function parseLine(string $line)
     {
         if (preg_match('/Date: ([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])), ((?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)) ([A-Z]+)/', $line, $dateMatches) > 0) {
-            $this->sourceDatetime = new \DateTime($dateMatches[1] . ' ' . $dateMatches[4], new \DateTimeZone($dateMatches[8]));
+            $this->sourceDatetime = new DateTime($dateMatches[1] . ' ' . $dateMatches[4], new DateTimeZone($dateMatches[8]));
             return;
-        } unset($dateMatches);
+        }
+        unset($dateMatches);
 
         if (preg_match('/([0-9A-F]+)(?:\.\.([0-9A-F]+))?\W+(\w+)\s*#\s*(\w+)/', $line, $matches) < 1) {
             return;
@@ -73,11 +76,11 @@ class JsonGenerator
         $alias = mb_strtoupper($matches[3]);
         $category = $matches[4];
 
-        if (! in_array($alias, $this->iso15924Aliases)){
+        if (!in_array($alias, $this->iso15924Aliases)) {
             $this->iso15924Aliases[] = $alias;
         }
 
-        if (! in_array($category, $this->categories)){
+        if (!in_array($category, $this->categories)) {
             $this->categories[] = $category;
         }
 
@@ -94,7 +97,7 @@ class JsonGenerator
      *
      * @return array
      */
-    public function toArray() : array
+    public function toArray(): array
     {
         return [
             'timestamp' => $this->sourceDatetime->format('c'),
@@ -105,17 +108,22 @@ class JsonGenerator
     }
 
     /**
-     * Return categories data as a json string.
+     * Return category data as a json string.
      *
      * @return string
      * @throws Exception
      */
-    public function toJson() : string
+    public function toJson(): string
     {
         $json = json_encode($this->toArray());
         if ($json === false) {
             throw new Exception(json_last_error_msg(), json_last_error());
         }
         return $json;
+    }
+
+    public function getDateTime(): DateTime
+    {
+        return $this->sourceDatetime;
     }
 }

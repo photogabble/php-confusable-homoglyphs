@@ -1,0 +1,81 @@
+#!/usr/bin/env php
+<?php
+
+use Photogabble\ConfusableHomoglyphs\Generators\CategoriesJsonGenerator;
+use Photogabble\ConfusableHomoglyphs\Generators\ConfusableJsonGenerator;
+use Photogabble\ConfusableHomoglyphs\Generators\Generator;
+
+$autoload = __DIR__ . "/../vendor/autoload.php";
+if (!file_exists($autoload)) {
+    fwrite(
+        STDERR,
+        "You need to run composer install in order to run this command."
+    );
+    exit(1);
+}
+require $autoload;
+
+$generators = [
+    [
+        'src' => 'https://www.unicode.org/Public/UNIDATA/Scripts.txt',
+        'handler' => CategoriesJsonGenerator::class,
+        'dist' => 'categories'
+    ],
+    [
+        'src' => 'https://www.unicode.org/Public/security/latest/confusables.txt',
+        'handler' => ConfusableJsonGenerator::class,
+        'dist' => 'confusables'
+    ],
+];
+
+$updated = false;
+
+if (!file_exists(__DIR__ . '/../.unicode_hashes')) {
+    $hashes = [
+        'categories' => null,
+        'confusables' => null,
+        'updated' => null,
+    ];
+} else {
+    $hashesSrc = file_get_contents(__DIR__ . '/../.unicode_hashes');
+    $hashes = json_decode($hashesSrc, true);
+}
+
+foreach ($generators as $generator) {
+    $src = file_get_contents($generator['src']);
+    $pathName = __DIR__ . "/../tests/assets/{$generator['dist']}.txt";
+    file_put_contents($pathName, $src);
+
+    $hash = sha1($src);
+    if ($hashes[$generator['dist']] === $hash) {
+        fwrite(STDOUT, "Skipping [{$generator['dist']}]" . PHP_EOL);
+        continue;
+    }
+
+    /** @var Generator $handler */
+    $handler = new $generator['handler'];
+    $handler->generateFromFile($pathName);
+
+    try {
+        $json = $handler->toJson();
+    } catch (Exception $e) {
+        fwrite(
+            STDERR,
+            $e->getMessage()
+        );
+        exit(1);
+    }
+
+    file_put_contents(__DIR__ . "/../src/{$generator['dist']}.json", $json);
+    fwrite(STDOUT, "Saved [{$generator['dist']}] sha1:$hash" . PHP_EOL);
+
+    $hashes[$generator['dist']] = $hash;
+    $hashes['updated'] = date('c');
+    $updated = true;
+}
+
+file_put_contents(__DIR__ . '/../.unicode_hashes', json_encode($hashes));
+
+if (!$updated) {
+    exit(0);
+}
