@@ -9,22 +9,11 @@ use Photogabble\ConfusableHomoglyphs\Confusable\JsonGenerator;
 
 class ConfusableTest extends Base
 {
-    /**
-     * Get Scripts.txt from the unicode.org website.
-     */
-    public static function setUpBeforeClass()
-    {
-        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'confusables.txt')) {
-            $scripts = file_get_contents('https://www.unicode.org/Public/security/latest/confusables.txt');
-            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'confusables.txt', $scripts);
-        }
-    }
-
     public function confusableFactory(): Confusable
     {
         try {
-            $categories = new Categories('utf8', __DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'categories.json');
-            return new Confusable($categories, 'utf8', __DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'confusables.json');
+            $categories = new Categories('utf8', __DIR__ . '/../src/categories.json');
+            return new Confusable($categories, 'utf8', __DIR__ . '/../src/confusables.json');
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
@@ -43,12 +32,10 @@ class ConfusableTest extends Base
         $this->assertTrue(count($arr) >= 9598);
 
         try {
-            $json = $generator->toJson();
+            $generator->toJson();
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
-
-        file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'confusables.json', $json);
     }
 
     public function testIsMixedScript()

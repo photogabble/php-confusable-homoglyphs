@@ -8,25 +8,13 @@ use Photogabble\ConfusableHomoglyphs\Categories\JsonGenerator;
 
 class CategoriesTest extends Base
 {
-
-    /**
-     * Get Scripts.txt from the unicode.org website.
-     */
-    public static function setUpBeforeClass()
-    {
-        if (!file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'Scripts.txt')) {
-            $scripts = file_get_contents('https://www.unicode.org/Public/UNIDATA/Scripts.txt');
-            file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'Scripts.txt', $scripts);
-        }
-    }
-
     /**
      * @return Categories
      */
     private function categoriesFactory(): Categories
     {
         try {
-            return new Categories('utf8', __DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'categories.json');
+            return new Categories('utf8', __DIR__ . '/../src/categories.json');
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
@@ -36,7 +24,7 @@ class CategoriesTest extends Base
     {
         $generator = new JsonGenerator();
         try {
-            $generator->generateFromFile(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'Scripts.txt');
+            $generator->generateFromFile(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'categories.txt');
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
@@ -54,12 +42,10 @@ class CategoriesTest extends Base
         $this->assertTrue(count($arr['code_points_ranges']) >= 1963);
 
         try {
-            $json = $generator->toJson();
+            $generator->toJson();
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
-
-        file_put_contents(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'categories.json', $json);
     }
 
     public function testAliasesCategories()
