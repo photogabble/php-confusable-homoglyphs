@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "test": "vendor/bin/phpunit",
-    "update": "bin/update"
+    "fetch": "bin/update"
   },
   "require": {
     "php": ">=7.0",
