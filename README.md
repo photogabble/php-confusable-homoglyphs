@@ -2,7 +2,7 @@
 <p align="center"><em>A PHP port of <a href="https://github.com/vhf/confusable_homoglyphs">vhf/confusable_homoglyphs</a></em></p>
 
 <p align="center">
-  <a href="https://travis-ci.org/photogabble/php-confusable-homoglyphs"><img src="https://travis-ci.org/photogabble/php-confusable-homoglyphs.svg?branch=master" alt="Build Status">
+  <a href="https://github.com/photogabble/php-confusable-homoglyphs/actions/workflows/phpunit.yml"><img src="https://github.com/photogabble/php-confusable-homoglyphs/actions/workflows/phpunit.yml/badge.svg" alt="Build Status"></a>
   <a href="https://packagist.org/packages/photogabble/php-confusable-homoglyphs"><img src="https://img.shields.io/packagist/v/photogabble/php-confusable-homoglyphs.svg" alt="Latest Stable Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/photogabble/php-confusable-homoglyphs.svg" alt="License"></a>
 </p>
