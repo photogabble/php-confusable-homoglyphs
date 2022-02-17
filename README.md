@@ -15,7 +15,7 @@ This is a complete port of the Python library [vhf/confusable_homoglyphs](https:
 
 A huge thank you goes to the Python package creator [Victor Felder](https://github.com/vhf) and its contributors [Ryan Kilby](https://github.com/rpkilby) and [muusik](https://github.com/muusik); without their work this port would not exist.
 
-This library is compatible with PHP versions 7.0 and above.
+This library is compatible with PHP versions 7.3 and above.
 
 ## Install
 
