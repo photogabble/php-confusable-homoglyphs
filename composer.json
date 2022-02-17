@@ -20,7 +20,8 @@
     }
   ],
   "scripts": {
-    "test": "vendor/bin/phpunit"
+    "test": "vendor/bin/phpunit",
+    "update": "bin/update"
   },
   "require": {
     "php": ">=7.0",

@@ -34,6 +34,8 @@ Please see the [tests](https://github.com/photogabble/php-confusable-homoglyphs/
 
 This project currently ships with unicode consortium public data version 10.0.0.
 
-The unicode blocks aliases and names for each character are extracted from [this file](http://www.unicode.org/Public/UNIDATA/Scripts.txt) provided by the unicode consortium. The version this project currently ships with was generated on the 11th March 2017.
+The unicode blocks aliases and names for each character are extracted from [this file](http://www.unicode.org/Public/UNIDATA/Scripts.txt) provided by the unicode consortium.
 
-The matrix of which character can be confused with which other characters is built using [this file](http://www.unicode.org/Public/security/latest/confusables.txt) provided by the unicode consortium. The version this project currently ships with was generated on the 8th April 2017.
+The matrix of which character can be confused with which other characters is built using [this file](http://www.unicode.org/Public/security/latest/confusables.txt) provided by the unicode consortium.
+
+The version this project currently ships with was generated on the 17th Feb 2022.
