@@ -2,6 +2,8 @@
 
 namespace Photogabble\ConfusableHomoglyphs;
 
+use Exception;
+
 class Categories
 {
     /**
@@ -21,11 +23,11 @@ class Categories
     /**
      * Categories constructor.
      *
-     * Loads the data file containing the categories information.
+     * Loads the data file containing the category information.
      *
      * @param string $encoding
      * @param null|string $dataFilePath
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(string $encoding='utf8', string $dataFilePath = null)
     {
@@ -34,7 +36,7 @@ class Categories
         }
 
         if (!file_exists($dataFilePath)) {
-            throw new \Exception('Could not find data file at path ['. $dataFilePath .']');
+            throw new Exception('Could not find data file at path ['. $dataFilePath .']');
         }
 
         $this->categoriesData = json_decode(file_get_contents($dataFilePath), true);
@@ -80,7 +82,7 @@ class Categories
     /**
      * Retrieves the script block alias for a unicode character.
      *
-     * e.g
+     * e.g.
      *
      * alias('A') -> 'LATIN'
      * alias('τ') -> 'GREEK'
