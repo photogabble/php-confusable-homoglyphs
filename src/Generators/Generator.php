@@ -1,6 +1,6 @@
 <?php
 
-namespace Photogabble\ConfusableHomoglyphs;
+namespace Photogabble\ConfusableHomoglyphs\Generators;
 use DateTime;
 
 interface Generator

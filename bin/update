@@ -14,12 +14,12 @@ require $autoload;
 $generators = [
     [
         'src' =>   'https://www.unicode.org/Public/UNIDATA/Scripts.txt',
-        'handler' => \Photogabble\ConfusableHomoglyphs\Categories\JsonGenerator::class,
+        'handler' => \Photogabble\ConfusableHomoglyphs\Generators\CategoriesJsonGenerator::class,
         'dist' => 'categories'
     ],
     [
         'src' =>   'https://www.unicode.org/Public/security/latest/confusables.txt',
-        'handler' => \Photogabble\ConfusableHomoglyphs\Confusable\JsonGenerator::class,
+        'handler' => \Photogabble\ConfusableHomoglyphs\Generators\ConfusableJsonGenerator::class,
         'dist' => 'confusables'
     ],
 ];
@@ -48,7 +48,7 @@ foreach ($generators as $generator) {
         continue;
     }
 
-    /** @var \Photogabble\ConfusableHomoglyphs\Generator $handler */
+    /** @var \Photogabble\ConfusableHomoglyphs\Generators\Generator $handler */
     $handler = new $generator['handler'];
     $handler->generateFromFile($pathName);
 

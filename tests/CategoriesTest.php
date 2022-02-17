@@ -4,7 +4,7 @@ namespace Photogabble\ConfusableHomoglyphs\Tests;
 
 use Exception;
 use Photogabble\ConfusableHomoglyphs\Categories;
-use Photogabble\ConfusableHomoglyphs\Categories\JsonGenerator;
+use Photogabble\ConfusableHomoglyphs\Generators\CategoriesJsonGenerator;
 
 class CategoriesTest extends Base
 {
@@ -22,7 +22,7 @@ class CategoriesTest extends Base
 
     public function testCategoriesJsonGenerator()
     {
-        $generator = new JsonGenerator();
+        $generator = new CategoriesJsonGenerator();
         try {
             $generator->generateFromFile(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'categories.txt');
         } catch (Exception $e) {

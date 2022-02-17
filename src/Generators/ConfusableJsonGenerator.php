@@ -1,13 +1,12 @@
 <?php
 
-namespace Photogabble\ConfusableHomoglyphs\Confusable;
+namespace Photogabble\ConfusableHomoglyphs\Generators;
 
 use DateTime;
 use DateTimeZone;
 use Exception;
-use Photogabble\ConfusableHomoglyphs\Generator;
 
-class JsonGenerator implements Generator
+class ConfusableJsonGenerator implements Generator
 {
 
     /**

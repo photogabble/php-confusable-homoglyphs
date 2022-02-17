@@ -5,7 +5,7 @@ namespace Photogabble\ConfusableHomoglyphs\Tests;
 use Exception;
 use Photogabble\ConfusableHomoglyphs\Categories;
 use Photogabble\ConfusableHomoglyphs\Confusable;
-use Photogabble\ConfusableHomoglyphs\Confusable\JsonGenerator;
+use Photogabble\ConfusableHomoglyphs\Generators\ConfusableJsonGenerator;
 
 class ConfusableTest extends Base
 {
@@ -21,7 +21,7 @@ class ConfusableTest extends Base
 
     public function testConfusableJsonGenerator()
     {
-        $generator = new JsonGenerator();
+        $generator = new ConfusableJsonGenerator();
         try {
             $generator->generateFromFile(__DIR__ . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'confusables.txt');
         } catch (Exception $e) {
