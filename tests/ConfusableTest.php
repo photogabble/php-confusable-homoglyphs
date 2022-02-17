@@ -114,4 +114,19 @@ class ConfusableTest extends Base
         $this->assertFalse($confusables->isDangerous(' ρτ.τ'));
         $this->assertFalse($confusables->isDangerous('ρτ.τ'));
     }
+
+    /**
+     * Test written to investigate report of missing confusables by Michael Butler
+     * @see https://github.com/photogabble/php-confusable-homoglyphs/issues/9
+     * @see https://util.unicode.org/UnicodeJsps/confusables.jsp?a=w&r=None
+     */
+    public function testJsonFileIssue9()
+    {
+        $all = file_get_contents(__DIR__ . '/../src/confusables.json');
+        $all = json_decode($all, true);
+        $this->assertGreaterThanOrEqual(23, count($all['a']));
+        $this->assertGreaterThanOrEqual(22, count($all['w']));
+        $this->assertGreaterThanOrEqual(20, count($all['w']));
+        $this->assertGreaterThanOrEqual(18, count($all['m']));
+    }
 }
