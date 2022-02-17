@@ -3,8 +3,8 @@
 
 <p align="center">
   <a href="https://travis-ci.org/photogabble/php-confusable-homoglyphs"><img src="https://travis-ci.org/photogabble/php-confusable-homoglyphs.svg?branch=master" alt="Build Status">
-  <a href="https://packagist.org/packages/photogabble/php-confusable-homoglyphs"><img src="https://poser.pugx.org/photogabble/php-confusable-homoglyphs/v/stable.svg" alt="Latest Stable Version"></a>
-  <a href="LICENSE"><img src="https://poser.pugx.org/photogabble/php-confusable-homoglyphs/license.svg" alt="License"></a>
+  <a href="https://packagist.org/packages/photogabble/php-confusable-homoglyphs"><img src="https://img.shields.io/packagist/v/photogabble/php-confusable-homoglyphs.svg" alt="Latest Stable Version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/photogabble/php-confusable-homoglyphs.svg" alt="License"></a>
 </p>
 
 ## About this package
