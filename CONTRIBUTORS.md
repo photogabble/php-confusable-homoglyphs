@@ -8,4 +8,5 @@
 
 In chronological order:
 
+* Michael Butler ([@michaelbutler](https://github.com/michaelbutler)) https://butlerpc.net/
 * Willem Stuursma-Ruwen ([@willemstuursma](https://github.com/willemstuursma)) http://willem.stuursma.name/
