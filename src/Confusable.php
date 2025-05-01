@@ -34,7 +34,7 @@ class Confusable
      * @param null|string $dataFilePath
      * @throws \Exception
      */
-    public function __construct(Categories $categories, string $encoding='utf8', string $dataFilePath = null)
+    public function __construct(Categories $categories, string $encoding='utf8', ?string $dataFilePath = null)
     {
         if (is_null($dataFilePath)){
             $dataFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'confusables.json';
